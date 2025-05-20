@@ -1,15 +1,18 @@
+// src/components/ui/Button.tsx
 import React from 'react';
 
 interface ButtonProps {
     children: React.ReactNode;
-    onClick?: () => void;
+    onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void; // Properly type the event
     variant?: 'primary' | 'secondary' | 'outline'; 
+    disabled?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
     children,
     onClick,
-    variant = 'primary'
+    variant = 'primary',
+    disabled = false
 }) => {
     const baseClasses = "px-4 py-2 rounded font-medium transition-colors";
 
@@ -22,7 +25,8 @@ const Button: React.FC<ButtonProps> = ({
     return (
         <button
             onClick={onClick}
-            className={`${baseClasses} ${variantClasses[variant]}`}
+            disabled={disabled}
+            className={`${baseClasses} ${variantClasses[variant]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
             {children}
         </button>
@@ -30,4 +34,3 @@ const Button: React.FC<ButtonProps> = ({
 };
 
 export default Button;
-// This code defines a reusable Button component in React with TypeScript.
