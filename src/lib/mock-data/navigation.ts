@@ -184,6 +184,14 @@ const mockSlugMappings: SlugMapping[] = [
     fullUrl: "/about-us"
   },
   
+  // Main products page
+  {
+    slug: "products",
+    pageId: "products_main",
+    pageType: "category",
+    fullUrl: "/products"
+  },
+  
   // User pages
   {
     slug: "my-account",
@@ -196,6 +204,14 @@ const mockSlugMappings: SlugMapping[] = [
     pageId: "basket_main",
     pageType: "basket",
     fullUrl: "/cart"
+  },
+  
+  // Accessories page
+  {
+    slug: "accessories",
+    pageId: "accessories_main",
+    pageType: "category",
+    fullUrl: "/accessories"
   }
 ];
 
@@ -274,6 +290,38 @@ const mockPageRegistry: PageRegistryEntry[] = [
     }
   },
   
+  // Category pages
+  {
+    id: "products_main",
+    title: "All Products",
+    slug: "products",
+    pageType: "category",
+    status: "active",
+    createdAt: "2024-01-01T00:00:00Z",
+    updatedAt: "2024-03-01T00:00:00Z",
+    template: "category",
+    seoData: {
+      title: "All Bioethanol Fireplaces - Shop Our Complete Collection",
+      description: "Browse our complete collection of bioethanol fireplaces. Wall-mounted, freestanding, and built-in models available.",
+      keywords: ["bioethanol fireplaces", "shop fireplaces", "fireplace collection"]
+    }
+  },
+  {
+    id: "cat_100",
+    title: "Fireplaces Category",
+    slug: "fireplaces",
+    pageType: "category",
+    status: "active",
+    createdAt: "2024-01-01T00:00:00Z",
+    updatedAt: "2024-03-01T00:00:00Z",
+    template: "category",
+    seoData: {
+      title: "Bioethanol Fireplaces - Browse Our Collection",
+      description: "Discover our wide selection of bioethanol fireplaces including wall-mounted and freestanding models.",
+      keywords: ["bioethanol fireplaces", "wall-mounted fireplaces", "freestanding fireplaces"]
+    }
+  },
+  
   // Static pages
   {
     id: "static_about",
@@ -306,6 +354,23 @@ const mockPageRegistry: PageRegistryEntry[] = [
     createdAt: "2024-01-01T00:00:00Z",
     updatedAt: "2024-01-01T00:00:00Z",
     template: "basket"
+  },
+  
+  // Accessories page
+  {
+    id: "accessories_main",
+    title: "Accessories",
+    slug: "accessories",
+    pageType: "category",
+    status: "active",
+    createdAt: "2024-01-01T00:00:00Z",
+    updatedAt: "2024-03-01T00:00:00Z",
+    template: "category",
+    seoData: {
+      title: "Fireplace Accessories - Fuel, Tools & More",
+      description: "Complete your fireplace setup with our range of accessories including bioethanol fuel, cleaning tools, and safety equipment.",
+      keywords: ["fireplace accessories", "bioethanol fuel", "fireplace tools"]
+    }
   }
 ];
 
