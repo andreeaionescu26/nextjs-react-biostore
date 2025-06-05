@@ -3,22 +3,11 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import NavigationMenu from '@/components/navigation/NavigationMenu'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  
-  // Sample navigation items - we'll make this dynamic later
-  const navItems = [
-    { name: 'Home', href: '/' },
-    { name: 'Products', href: '/products' },
-    { name: 'Categories', href: '/categories' },
-    { name: 'About', href: '/about' },
-    { name: 'Contact', href: '/contact' },
-  ];
-
-  // Function to check if a link is active
-  const isActive = (path: string) => pathname === path;
 
   return (
     <header className="bg-white shadow-sm">
@@ -30,21 +19,9 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`${
-                  isActive(item.href)
-                    ? 'text-blue-600 font-medium'
-                    : 'text-gray-600 hover:text-blue-600'
-                } transition-colors`}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
+          <div className='hidden md:flex'>
+             <NavigationMenu className='flex items-center space-x-2' />
+          </div>
 
           {/* User Actions */}
           <div className="flex items-center space-x-4">
@@ -67,7 +44,7 @@ const Navbar = () => {
             </button>
 
             {/* User Account Link */}
-            <Link href="/account" className="text-gray-600 hover:text-blue-600">
+            <Link href="/my-account" className="text-gray-600 hover:text-blue-600">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
@@ -134,25 +111,15 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <nav className="md:hidden py-4 border-t">
-            <ul className="space-y-2">
-              {navItems.map((item) => (
-                <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className={`${
-                      isActive(item.href)
-                        ? 'text-blue-600 font-medium'
-                        : 'text-gray-600'
-                    } block py-2`}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+         <nav className='md:hidden py-4 border-t'>
+          <div className='space-y-2'>
+            {/* Use NavigationMenu for mobile too with diffrent styling */}
+            <NavigationMenu
+            className='flex flex-col space-y-2'
+            showLoadingState={false}
+            />
+          </div>
+         </nav>
         )}
       </div>
     </header>

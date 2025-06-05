@@ -9,7 +9,7 @@ export default async function Home() {
     
     <main className="flex min-h-screen flex-col">
       < Navbar />
-      {/* Replace with a valid PageRegistryEntry, e.g., the home page entry */}
+      
       <LandingPage
         page={{
           id: "home_main",

@@ -164,16 +164,22 @@ const mockSlugMappings: SlugMapping[] = [
   
   // Article examples
   {
-    slug: "installation-guide",
+  slug: "guides",
+  pageId: "guides_main",
+  pageType: "category",
+  fullUrl: "/guides"
+  }, 
+  {
+    slug: "installation",
     pageId: "art_200",
     pageType: "article",
-    fullUrl: "/guides/installation-guide"
+    fullUrl: "/guides/installation"
   },
   {
-    slug: "safety-rules",
+    slug: "safety",
     pageId: "art_201",
     pageType: "article",
-    fullUrl: "/guides/safety-rules"
+    fullUrl: "/guides/safety"
   },
   
   // Static pages
@@ -275,9 +281,24 @@ const mockPageRegistry: PageRegistryEntry[] = [
   
   // Article examples
   {
+  id: "guides_main",
+  title: "Guides & Articles",
+  slug: "guides", 
+  pageType: "category",
+  status: "active",
+  createdAt: "2024-01-01T00:00:00Z",
+  updatedAt: "2024-03-01T00:00:00Z",
+  template: "category",
+  seoData: {
+    title: "Fireplace Guides & Articles - Installation, Safety & More",
+    description: "Learn everything about bioethanol fireplaces with our comprehensive guides covering installation, safety, and maintenance.",
+    keywords: ["fireplace guides", "installation guide", "safety tips", "fireplace maintenance"]
+  }
+  }, 
+  {
     id: "art_200",
     title: "Installation Guide for Bioethanol Fireplaces",
-    slug: "installation-guide",
+    slug: "installation",
     pageType: "article",
     status: "active",
     createdAt: "2024-02-10T00:00:00Z",
@@ -287,6 +308,21 @@ const mockPageRegistry: PageRegistryEntry[] = [
       author: "Fireplace Expert",
       readTime: "5 min",
       category: "installation"
+    }
+  },
+  {
+    id: "art_201",
+    title: "Safety measures for Bioethanol Fireplaces",
+    slug: "safety",
+    pageType: "article",
+    status: "active",
+    createdAt: "2024-02-10T00:00:00Z",
+    updatedAt: "2024-04-15T00:00:00Z",
+    template: "article",
+    content: {
+      author: "Fireplace Expert",
+      readTime: "3 min",
+      category: "safety"
     }
   },
   
