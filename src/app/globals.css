@@ -7,6 +7,12 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --nav-blur: rgba(255, 255, 255, 0.95);
+  --nav-border: rgba(0, 0, 0, 0.1);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
 @theme inline {
@@ -20,6 +26,8 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --nav-blur: rgba(0, 0, 0, 0.95);
+    --nav-border: rgba(255, 255, 255, 0.1);
   }
 }
 
@@ -27,4 +35,154 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom navigation animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Enhanced navigation styles */
+.navigation-menu {
+  position: relative;
+}
+
+/* Smooth backdrop blur effect */
+.navigation-dropdown {
+  backdrop-filter: blur(10px);
+  background: var(--nav-blur);
+  border: 1px solid var(--nav-border);
+}
+
+/* Custom hover animations */
+.nav-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.nav-item:hover::before {
+  left: 100%;
+}
+
+/* Improved focus states for accessibility */
+.nav-link:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Micro-interactions */
+.nav-icon {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-icon:hover {
+  transform: translateY(-1px);
+}
+
+/* Staggered animation utilities */
+.stagger-item-1 { animation-delay: 0ms; }
+.stagger-item-2 { animation-delay: 50ms; }
+.stagger-item-3 { animation-delay: 100ms; }
+.stagger-item-4 { animation-delay: 150ms; }
+.stagger-item-5 { animation-delay: 200ms; }
+
+/* Glass morphism effect */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Modern shadows */
+.shadow-modern {
+  box-shadow: 
+    0 0 0 1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.1),
+    0 8px 16px -4px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-modern-lg {
+  box-shadow: 
+    0 0 0 1px rgba(0, 0, 0, 0.05),
+    0 4px 8px -2px rgba(0, 0, 0, 0.1),
+    0 16px 32px -8px rgba(0, 0, 0, 0.15);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Responsive navigation improvements */
+@media (max-width: 768px) {
+  .navigation-menu {
+    position: relative;
+  }
+  
+  .mobile-dropdown {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    animation: scaleIn 0.2s ease-out;
+  }
 }
