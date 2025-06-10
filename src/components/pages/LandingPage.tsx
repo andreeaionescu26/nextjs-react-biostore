@@ -9,22 +9,43 @@ interface PageComponentProps {
 
 export function LandingPage({ page, params }: PageComponentProps) {
     return (
-        <div className="max-w-6xl mx-auto p-6">
+        <div className="full">
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                {/* Hero Section */}
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-12 text-center">
-                    <h1 className="text-5xl font-bold mb-4">
-                        {page.title}
-                    </h1>
-                    <p className="text-xl mb-8">
-                        Special campaign landing page
-                    </p>
-                    <button className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors">
-                        Get Started
-                    </button>
+                {/* Hero Video Section */}
+                <div className="relative h-screen w-full overflow-hidden">
+                    {/* Video Background */}
+                    <video
+                        className="absolute top-0 left-0 w-full h-full object-cover"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        poster="/videos/hero-poster.jpg"
+                    >
+                        <source src="/videos/frontpage_hero_video.mp4" type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                    
+                    {/* Overlay for better text readability */}
+                    <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+                    
+                    {/* Hero Content */}
+                    <div className="relative z-10 flex items-center justify-center h-full text-white text-center px-4">
+                        <div className="max-w-8xl">
+                            <h1 className="text-5xl font-semibold mb-6 drop-shadow-lg">
+                              Discover the world of decorative luxury fireplaces!
+                            </h1>
+                            <p className="text-xl md:text-2xl mb-8 drop-shadow-md">
+                                Expert guidance, bespoke solutions, and smokeless fireplaces!
+                            </p>
+                            <button className="bg-trasnparent text-white border-2 border-[#f58232] px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gradient-to-r hover:from-[#f58232] hover:to-[#ff9500] hover:text-white transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                               Read more
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                {/* Content Section */}
+                {/* Content Section - keeping your existing content */}
                 <div className="p-12">
                     <div className="grid md:grid-cols-2 gap-12 items-center">
                         <div>
@@ -44,7 +65,7 @@ export function LandingPage({ page, params }: PageComponentProps) {
                         </div>
                         
                         <div className="bg-gray-100 h-64 rounded-lg flex items-center justify-center">
-                        <span className="text-gray-500 text-lg">Campaign Image</span>
+                            <span className="text-gray-500 text-lg">Campaign Image</span>
                         </div>
                     </div>
                 </div>

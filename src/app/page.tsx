@@ -9,7 +9,7 @@ export default async function Home() {
     
     <main className="flex min-h-screen flex-col">
       < Navbar />
-      
+       
       <LandingPage
         page={{
           id: "home_main",
