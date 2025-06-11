@@ -1,6 +1,5 @@
 // src/app/page.tsx
 import React from 'react';
-import Navbar from '@/components/layout/Navbar';
 import LandingPage from '@/components/pages/LandingPage';
 
 export default async function Home() {
@@ -8,8 +7,6 @@ export default async function Home() {
   return (
     
     <main className="flex min-h-screen flex-col">
-      < Navbar />
-       
       <LandingPage
         page={{
           id: "home_main",
