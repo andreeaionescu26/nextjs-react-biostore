@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { NavigationItem } from '@/types/navigation';
-import { useNavigation } from '@/hooks/useNavigation';
+import { useNavigationSimple as useNavigation } from '@/hooks/useNavigationSimple';
 
 interface NavigationMenuProps {
     className?: string;

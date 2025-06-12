@@ -50,6 +50,24 @@ const mockMenuStructure: NavigationItem[] = [
             parentId: "fireplaces",
             sortOrder: 2,
             isVisible: true
+          },
+          {
+            id: "suspended",
+            title: "Suspended",
+            slug: "suspended",
+            pageType: "category",
+            parentId: "fireplaces",
+            sortOrder: 3,
+            isVisible: true
+          },
+          {
+            id: "inserted",
+            title: "Inserted",
+            slug: "inserted",
+            pageType: "category",
+            parentId: "fireplaces",
+            sortOrder: 4,
+            isVisible: true
           }
         ]
       },
@@ -161,6 +179,26 @@ const mockSlugMappings: SlugMapping[] = [
     pageType: "category",
     fullUrl: "/fireplaces/wall-mounted"
   },
+  {
+    slug: "freestanding",
+    pageId: "cat_102",
+    pageType: "category",
+    fullUrl: "/fireplaces/freestanding"
+  },
+  {
+    slug: "suspended",
+    pageId: "cat_103",
+    pageType: "category",
+    fullUrl: "/fireplaces/suspended"
+  },
+  {
+    slug: "inserted",
+    pageId: "cat_104",
+    pageType: "category",
+    fullUrl: "/fireplaces/inserted"
+  },
+  
+
   
   // Article examples
   {
@@ -343,9 +381,9 @@ const mockPageRegistry: PageRegistryEntry[] = [
     }
   },
   {
-    id: "cat_100",
-    title: "Fireplaces Category",
-    slug: "fireplaces",
+    id: "cat_101",
+    title: "Wall Mounted Fireplaces Category",
+    slug: "wall-mounted",
     pageType: "category",
     status: "active",
     createdAt: "2024-01-01T00:00:00Z",
@@ -355,7 +393,52 @@ const mockPageRegistry: PageRegistryEntry[] = [
       title: "Bioethanol Fireplaces - Browse Our Collection",
       description: "Discover our wide selection of bioethanol fireplaces including wall-mounted and freestanding models.",
       keywords: ["bioethanol fireplaces", "wall-mounted fireplaces", "freestanding fireplaces"]
-    }
+    },
+  },
+  {
+    id: "cat_102",
+    title: "Freestanding Fireplaces Category",
+    slug: "freestanding",
+    pageType: "category",
+    status: "active",
+    createdAt: "2024-01-01T00:00:00Z",
+    updatedAt: "2024-03-01T00:00:00Z",
+    template: "category",
+    seoData: {
+      title: "Bioethanol Fireplaces - Browse Our Collection",
+      description: "Discover our wide selection of bioethanol fireplaces including wall-mounted and freestanding models.",
+      keywords: ["bioethanol fireplaces", "wall-mounted fireplaces", "freestanding fireplaces"]
+    },
+  },
+  {
+    id: "cat_103",
+    title: "Suspended Fireplaces Category",
+    slug: "suspended",
+    pageType: "category",
+    status: "active",
+    createdAt: "2024-01-01T00:00:00Z",
+    updatedAt: "2024-03-01T00:00:00Z",
+    template: "category",
+    seoData: {
+      title: "Bioethanol Fireplaces - Browse Our Collection",
+      description: "Discover our wide selection of bioethanol fireplaces including wall-mounted and freestanding models.",
+      keywords: ["bioethanol fireplaces", "wall-mounted fireplaces", "freestanding fireplaces"]
+    },
+  },
+  {
+    id: "cat_104",
+    title: "Inserted Fireplaces Category",
+    slug: "inserted",
+    pageType: "category",
+    status: "active",
+    createdAt: "2024-01-01T00:00:00Z",
+    updatedAt: "2024-03-01T00:00:00Z",
+    template: "category",
+    seoData: {
+      title: "Bioethanol Fireplaces - Browse Our Collection",
+      description: "Discover our wide selection of bioethanol fireplaces including wall-mounted and freestanding models.",
+      keywords: ["bioethanol fireplaces", "wall-mounted fireplaces", "freestanding fireplaces"]
+    },
   },
   
   // Static pages

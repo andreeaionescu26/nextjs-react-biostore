@@ -208,9 +208,9 @@ export function LandingPage({ page, params }: PageComponentProps): React.ReactEl
 
                 {/* Hero Content */}
                 <div className="relative z-10 flex items-center justify-center h-full text-white text-center px-4">
-                    <div className="max-w-4xl">
+                    <div className="max-w-8xl">
                         <FadeInUp delay={200}>
-                            <h1 className="text-5xl md:text-6xl font-bold mb-6 drop-shadow-lg">
+                            <h1 className="text-4xl md:text-6xl font-semibold mb-6 drop-shadow-lg">
                                 Discover the world of <span className="text-orange-400">decorative luxury</span> fireplaces
                             </h1>
                         </FadeInUp>
