@@ -3,8 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-// import { CartProvider  } from "@/context/CartContext";
-
+import { CartProvider } from "@/context/CartContext";
+import MainContentWrapper from "@/components/layout/MainContentWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,7 +21,6 @@ export const metadata: Metadata = {
   description: "Discover our collection of premium bioethanol fireplaces. Clean-burning, eco-friendly fireplaces for modern homes.",
 };
 
-
 export default function RootLayout({
   children,
 }: {
@@ -29,19 +28,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
- 
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        
+        <CartProvider>
           <Navbar />
-
-          <main>
+          
+          <MainContentWrapper>
             {children}
-          </main>
+          </MainContentWrapper>
 
           <Footer />
-        
+        </CartProvider>
       </body>
     </html>
   );

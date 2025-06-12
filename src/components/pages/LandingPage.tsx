@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState, ReactNode } from 'react';
 import { PageRegistryEntry } from "@/types/navigation";
+import { useCart } from '@/hooks/useCart'; // Import our cart hook
 
 // TypeScript interfaces
 interface PageComponentProps {
@@ -221,9 +222,11 @@ export function LandingPage({ page, params }: PageComponentProps): React.ReactEl
                         </FadeInUp>
                         
                         <FadeInUp delay={600}>
-                            <button className="bg-transparent text-white border-2 border-[#f58232] px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gradient-to-r hover:from-[#f58232] hover:to-[#ff9500] hover:border-[#f58232] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                                Read more
-                            </button>
+                            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+                                <button className="bg-transparent text-white border-2 border-[#f58232] px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gradient-to-r hover:from-[#f58232] hover:to-[#ff9500] hover:border-[#f58232] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                                    Read more
+                                </button>
+                            </div>
                         </FadeInUp>
                     </div>
                 </div>

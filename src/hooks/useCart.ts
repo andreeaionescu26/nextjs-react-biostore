@@ -1,2 +1,2 @@
 // Re-export everything from the context file for convenience
-export { useCart, CartProvider, type CartItem, type CartState } from '@/context/CartContext';
+export { useCart, CartProvider, type CartItem } from '@/context/CartContext';

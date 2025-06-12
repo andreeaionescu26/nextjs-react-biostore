@@ -5,12 +5,37 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Product } from '@/types/product';
 import Button from '@/components/ui/Button';
+import { useCart } from '@/hooks/useCart';
 
 interface ProductCardProps {
   product: Product;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const { addToCart } = useCart();
+
+  //function to handle adding product to card
+  const  handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    // create cart item from product data 
+    const cartItem = {
+      id: `product-${product.id}`,
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      slug: product.slug,
+      maxStock: product.stock,
+      image: product.thumbnail,
+      quantity: 1
+    };
+
+    addToCart(cartItem);
+
+    console.log(`added ${product.name} to cart!`);
+  };
+
+
   return (
     <div className="group rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
       <Link href={`/products/${product.slug}`} className="block relative h-64 overflow-hidden">
@@ -57,12 +82,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             )}
           </div>
           
-          <Button variant="primary" onClick={(e) => {
-            e.preventDefault();
-            // This will be connected to cart functionality later
-            alert(`Added ${product.name} to cart!`);
-          }}>
-            Add to Cart
+          <Button 
+            variant="primary" 
+            onClick={handleAddToCart}
+            disabled={product.stock <= 0}
+          >
+            {product.stock <= 0 ? 'Out of Stock' : 'Add to Cart'}
           </Button>
         </div>
       </div>

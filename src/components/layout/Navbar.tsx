@@ -4,12 +4,17 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import NavigationMenu from '@/components/navigation/NavigationMenu';
+import { useCart } from '@/hooks/useCart';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const pathname = usePathname();
+
+  //Get cart item count
+  const { state } = useCart();
+  const { itemCount } = state;
 
   // Check if we're on a page with hero video (like landing page)
   const isVideoPage = pathname === '/' || pathname.includes('/landing');
@@ -67,15 +72,7 @@ const Navbar = () => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Subtle accent line at top */}
-      <div 
-        className="h-0.5 bg-gradient-to-r from-transparent via-[#f58232] to-transparent opacity-80"
-        style={{
-          background: isVideoPage && !isScrolled 
-            ? 'linear-gradient(to right, transparent, rgba(245, 130, 50, 0.6), transparent)'
-            : 'linear-gradient(to right, transparent, #f58232, transparent)'
-        }}
-      ></div>
+      
       
       <div className="container mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center py-6 lg:py-8">
@@ -224,10 +221,12 @@ const Navbar = () => {
                 />
               </svg>
               
-              {/* Clean cart badge */}
-              <span className="absolute -top-2 -right-2 w-4 h-4 bg-[#f58232] text-white rounded-full text-xs font-medium flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-sm">
-                3
-              </span>
+              {/* Dynamic cart badge */}
+              {itemCount > 0 && (
+                <span className="absolute -top-2 -right-2 min-w-[1rem] h-4 bg-[#f58232] text-white rounded-full text-xs font-medium flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-sm px-1">
+                  {itemCount > 99 ? '99+' : itemCount}
+                </span>
+              )}
             </Link>
 
             {/* Minimal Mobile Menu Button */}
