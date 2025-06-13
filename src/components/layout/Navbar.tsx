@@ -4,12 +4,15 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import NavigationMenu from '@/components/navigation/NavigationMenu';
+import SearchInput from '@/components/ui/SearchInput';
 import { useCart } from '@/hooks/useCart';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchFocused, setSearchFocused] = useState(false);
   const pathname = usePathname();
 
   //Get cart item count
@@ -32,6 +35,7 @@ const Navbar = () => {
   // Close mobile menu when route changes
   useEffect(() => {
     setIsOpen(false);
+    setShowSearch(false);
   }, [pathname]);
 
   // Dynamic navbar styles based on context
@@ -63,6 +67,86 @@ const Navbar = () => {
 
   const styles = getNavbarStyles();
 
+  // Get search input styles based on context
+  const getSearchStyles = () => {
+    if (isVideoPage && !isScrolled) {
+      // Over video: minimal glass effect
+      return {
+        container: 'max-w-sm transition-all duration-500 ease-out',
+        input: `
+          w-full px-4 py-2 pl-10 pr-3 text-sm
+          ${searchFocused 
+            ? 'bg-white/20 backdrop-blur-xl border-white/40 text-white placeholder-white/70' 
+            : 'bg-transparent border-white/30 text-white/90 placeholder-white/50 hover:border-white/50'
+          }
+          border rounded-full
+          focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/60
+          transition-all duration-300 ease-out
+        `,
+        icon: `absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 transition-colors duration-300 ${
+          searchFocused ? 'text-white/80' : 'text-white/60'
+        }`,
+        clear: 'text-white/60 hover:text-white/90'
+      };
+    } else {
+      // Normal state: subtle solid background
+      return {
+        container: 'max-w-md transition-all duration-500 ease-out',
+        input: `
+          w-full px-4 py-2.5 pl-10 pr-3 text-sm
+          ${searchFocused 
+            ? 'bg-white border-neutral-300 text-neutral-900 placeholder-neutral-500 shadow-md' 
+            : 'bg-neutral-50/80 border-neutral-200 text-neutral-700 placeholder-neutral-400 hover:bg-white hover:border-neutral-300'
+          }
+          border rounded-full
+          focus:outline-none focus:ring-2 focus:ring-[#f58232]/20 focus:border-[#f58232]/40
+          transition-all duration-300 ease-out backdrop-blur-sm
+        `,
+        icon: `absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 transition-colors duration-300 ${
+          searchFocused ? 'text-neutral-500' : 'text-neutral-400'
+        }`,
+        clear: 'text-neutral-400 hover:text-neutral-600'
+      };
+    }
+  };
+
+  const searchStyles = getSearchStyles();
+
+  // Handle search toggle for mobile
+  const toggleSearch = () => {
+    setShowSearch(!showSearch);
+  };
+
+  // SearchInput with custom styling
+  const StyledSearchInput = ({ isMobile = false }) => {
+    return (
+      <div className={searchStyles.container}>
+        <SearchInput 
+          placeholder={isMobile ? "Search..." : "Search products & guides"}
+          maxResults={isMobile ? 5 : 6}
+          onResultClick={() => {
+            if (isMobile) setShowSearch(false);
+            setSearchFocused(false);
+          }}
+          onFocus={() => setSearchFocused(true)}
+          onBlur={() => setSearchFocused(false)}
+          className="w-full"
+          customStyles={{
+            input: searchStyles.input,
+            icon: searchStyles.icon,
+            clear: searchStyles.clear,
+            dropdown: `
+              absolute top-full left-0 right-0 mt-2 z-50
+              bg-white border border-neutral-200 rounded-xl shadow-lg
+              max-h-96 overflow-y-auto
+              ${isVideoPage && !isScrolled ? 'backdrop-blur-xl bg-white/95' : ''}
+            `
+          }}
+        />
+      </div>
+    );
+  };
+
   return (
     <header 
       className={`
@@ -75,19 +159,19 @@ const Navbar = () => {
       
       
       <div className="container mx-auto px-6 lg:px-8">
-        <div className="flex justify-between items-center py-6 lg:py-8">
+        <div className="flex justify-between items-center py-4 lg:py-6">
           
           {/* Minimal Premium Logo */}
           <Link 
             href="/" 
-            className="flex items-center space-x-4 group relative z-10"
+            className="flex items-center space-x-3 group relative z-10"
           >
             {/* Simplified Logo Icon */}
             <div className="relative">
-              <div className="w-10 h-10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 ease-out">
+              <div className="w-8 h-8 lg:w-10 lg:h-10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 ease-out">
                 {/* Flame icon with clean styling */}
                 <svg 
-                  className={`w-8 h-8 transition-all duration-500 ease-out ${
+                  className={`w-6 h-6 lg:w-8 lg:h-8 transition-all duration-500 ease-out ${
                     isVideoPage && !isScrolled 
                       ? 'text-white drop-shadow-lg group-hover:text-[#f58232]' 
                       : 'text-[#f58232] group-hover:text-[#e6742d]'
@@ -107,13 +191,13 @@ const Navbar = () => {
             {/* Clean Brand Text */}
             <div className="flex flex-col">
               <span className={`
-                text-2xl lg:text-3xl font-light tracking-wide transition-all duration-500
+                text-xl lg:text-2xl xl:text-3xl font-light tracking-wide transition-all duration-500
                 ${isVideoPage && !isScrolled 
                   ? 'text-white drop-shadow-lg group-hover:text-[#f58232]' 
                   : 'text-neutral-900 group-hover:text-[#f58232]'
                 }
               `}>
-                Biothanol
+                Bioethanol
               </span>
               <span className={`
                 text-xs lg:text-sm font-normal tracking-[0.2em] uppercase transition-colors duration-500
@@ -136,22 +220,28 @@ const Navbar = () => {
             />
           </div>
 
-          {/* Minimal Action Buttons */}
-          <div className="flex items-center space-x-6">
+          {/* Desktop Search - Subtle and Minimal */}
+          <div className="hidden lg:block">
+            <StyledSearchInput />
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex items-center space-x-4 lg:space-x-6">
             
-            {/* Search Button */}
+            {/* Mobile Search Toggle Button */}
             <button 
-              className="group relative transition-all duration-300"
+              className="lg:hidden group relative transition-all duration-300"
+              onClick={toggleSearch}
               aria-label="Search"
             >
               <svg
                 className={`
-                  w-6 h-6 transition-all duration-300
+                  w-5 h-5 lg:w-6 lg:h-6 transition-all duration-300
                   ${isVideoPage && !isScrolled 
                     ? 'text-white/90 hover:text-[#f58232] drop-shadow-sm' 
                     : 'text-neutral-600 hover:text-[#f58232]'
                   }
-                  group-hover:scale-110
+                  group-hover:scale-110 ${showSearch ? 'text-[#f58232]' : ''}
                 `}
                 fill="none"
                 stroke="currentColor"
@@ -174,7 +264,7 @@ const Navbar = () => {
             >
               <svg
                 className={`
-                  w-6 h-6 transition-all duration-300
+                  w-5 h-5 lg:w-6 lg:h-6 transition-all duration-300
                   ${isVideoPage && !isScrolled 
                     ? 'text-white/90 hover:text-[#f58232] drop-shadow-sm' 
                     : 'text-neutral-600 hover:text-[#f58232]'
@@ -202,7 +292,7 @@ const Navbar = () => {
             >
               <svg
                 className={`
-                  w-6 h-6 transition-all duration-300
+                  w-5 h-5 lg:w-6 lg:h-6 transition-all duration-300
                   ${isVideoPage && !isScrolled 
                     ? 'text-white/90 hover:text-[#f58232] drop-shadow-sm' 
                     : 'text-neutral-600 hover:text-[#f58232]'
@@ -231,34 +321,46 @@ const Navbar = () => {
 
             {/* Minimal Mobile Menu Button */}
             <button
-              className="lg:hidden relative transition-all duration-300 ml-4"
+              className="lg:hidden relative transition-all duration-300 ml-2"
               onClick={() => setIsOpen(!isOpen)}
               aria-label={isOpen ? 'Close menu' : 'Open menu'}
             >
-              <div className="relative w-6 h-5">
+              <div className="relative w-5 h-4">
                 <span 
                   className={`
-                    absolute block w-6 h-0.5 transform transition-all duration-300 ease-in-out
-                    ${isOpen ? 'rotate-45 translate-y-2' : 'translate-y-0'}
+                    absolute block w-5 h-0.5 transform transition-all duration-300 ease-in-out
+                    ${isOpen ? 'rotate-45 translate-y-1.5' : 'translate-y-0'}
                     ${isVideoPage && !isScrolled ? 'bg-white drop-shadow-sm' : 'bg-neutral-700'}
                   `}
                 />
                 <span 
                   className={`
-                    absolute block w-6 h-0.5 transform transition-all duration-300 ease-in-out translate-y-2
+                    absolute block w-5 h-0.5 transform transition-all duration-300 ease-in-out translate-y-1.5
                     ${isOpen ? 'opacity-0' : 'opacity-100'}
                     ${isVideoPage && !isScrolled ? 'bg-white drop-shadow-sm' : 'bg-neutral-700'}
                   `}
                 />
                 <span 
                   className={`
-                    absolute block w-6 h-0.5 transform transition-all duration-300 ease-in-out translate-y-4
-                    ${isOpen ? '-rotate-45 -translate-y-2' : 'translate-y-0'}
+                    absolute block w-5 h-0.5 transform transition-all duration-300 ease-in-out translate-y-3
+                    ${isOpen ? '-rotate-45 -translate-y-1.5' : 'translate-y-0'}
                     ${isVideoPage && !isScrolled ? 'bg-white drop-shadow-sm' : 'bg-neutral-700'}
                   `}
                 />
               </div>
             </button>
+          </div>
+        </div>
+
+        {/* Mobile Search Bar - Subtle slide-down */}
+        <div 
+          className={`
+            lg:hidden overflow-hidden transition-all duration-500 ease-out
+            ${showSearch ? 'max-h-20 pb-4' : 'max-h-0'}
+          `}
+        >
+          <div className="pt-2">
+            <StyledSearchInput isMobile={true} />
           </div>
         </div>
 
@@ -270,7 +372,7 @@ const Navbar = () => {
           `}
         >
           <div className={`
-            border-t pt-8 mt-4
+            border-t pt-6 mt-4
             ${isVideoPage && !isScrolled 
               ? 'border-white/20' 
               : 'border-neutral-200'
@@ -284,11 +386,11 @@ const Navbar = () => {
             />
             
             {/* Clean Mobile CTA */}
-            <div className="mt-8 pt-8 border-t border-current border-opacity-20">
+            <div className="mt-6 pt-6 border-t border-current border-opacity-20">
               <Link
                 href="/contact"
                 className={`
-                  block w-full text-center py-4 px-6 font-medium text-lg
+                  block w-full text-center py-3 px-6 font-medium text-base
                   transform hover:scale-105 transition-all duration-300 border-2 rounded-lg
                   ${isVideoPage && !isScrolled 
                     ? 'text-[#f58232] border-[#f58232] hover:bg-[#f58232] hover:text-white backdrop-blur-sm' 
