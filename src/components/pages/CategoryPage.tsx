@@ -16,7 +16,7 @@ export function CategoryPage({ page, params }: ProductPageProps) {
     const products: Product[] = productResponse.products;
 
     return (
-        <div className="max-w-6xl mx-auto p-6">
+        <div className="max-w-7xl mx-auto p-6">
             <div className="bg-white rounded-lg shadow-md p-8">
                 {/* Category Header */}
                 <div className="mb-8">

@@ -84,7 +84,7 @@ export function AccountPage({ page, params }: PageComponentProps) {
                     }
                 ],
                 stats: {
-                    totalSpent: state.user.id === 1 ? 5240 : state.user.id === 2 ? 3120 : 8900, // Different amounts per user
+                    totalSpent: state.user.id === 1 ? 5240 : state.user.id === 2 ? 3120 : 8900,
                     ordersPlaced: state.user.id === 1 ? 15 : state.user.id === 2 ? 8 : 24,
                     wishlistItems: state.user.id === 1 ? 8 : state.user.id === 2 ? 12 : 5,
                     loyaltyPoints: state.user.id === 1 ? 524 : state.user.id === 2 ? 312 : 890
@@ -109,42 +109,51 @@ export function AccountPage({ page, params }: PageComponentProps) {
     const getStatusColor = (status: OrderSummary['status']) => {
         switch (status) {
             case 'delivered':
-                return 'bg-green-100 text-green-800';
+                return 'text-emerald-600 bg-emerald-50';
             case 'processing':
-                return 'bg-yellow-100 text-yellow-800';
+                return 'text-amber-600 bg-amber-50';
             case 'shipped':
-                return 'bg-blue-100 text-blue-800';
+                return 'text-blue-600 bg-blue-50';
             default:
-                return 'bg-gray-100 text-gray-800';
+                return 'text-gray-600 bg-gray-50';
         }
     };
 
     // Navigation items for the sidebar
     const navigationItems = [
-        { id: 'dashboard', label: 'Dashboard', icon: '🏠' },
-        { id: 'orders', label: 'Orders', icon: '📦' },
-        { id: 'profile', label: 'Profile', icon: '👤' },
-        { id: 'addresses', label: 'Addresses', icon: '📍' },
-        { id: 'wishlist', label: 'Wishlist', icon: '❤️' },
-        { id: 'settings', label: 'Settings', icon: '⚙️' },
+        { id: 'dashboard', label: 'Overview', icon: '○' },
+        { id: 'orders', label: 'Orders', icon: '□' },
+        { id: 'profile', label: 'Profile', icon: '△' },
+        { id: 'addresses', label: 'Addresses', icon: '◇' },
+        { id: 'wishlist', label: 'Wishlist', icon: '♡' },
+        { id: 'settings', label: 'Settings', icon: '⚙' },
     ];
 
     // Show loading state
     if (state.isLoading) {
         return (
-            <div className="max-w-6xl mx-auto p-6">
-                <div className="bg-white rounded-lg shadow-md p-8">
-                    <div className="animate-pulse">
-                        <div className="h-8 bg-gray-200 rounded w-1/4 mb-8"></div>
-                        <div className="grid md:grid-cols-4 gap-8">
-                            <div className="md:col-span-1">
+            <div className="min-h-screen bg-gray-50 p-6">
+                <div className="max-w-7xl mx-auto bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                    <div className="bg-white border-b border-gray-100">
+                        <div className="px-6 py-8 sm:px-8">
+                            <div className="animate-pulse">
+                                <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
+                                <div className="h-4 bg-gray-200 rounded w-1/6"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex">
+                        <div className="w-64 bg-white border-r border-gray-100 min-h-screen">
+                            <div className="p-6 animate-pulse">
                                 <div className="space-y-2">
                                     {[1,2,3,4,5,6].map(i => (
                                         <div key={i} className="h-10 bg-gray-200 rounded"></div>
                                     ))}
                                 </div>
                             </div>
-                            <div className="md:col-span-3">
+                        </div>
+                        <div className="flex-1 p-8">
+                            <div className="animate-pulse">
                                 <div className="h-64 bg-gray-200 rounded"></div>
                             </div>
                         </div>
@@ -160,180 +169,188 @@ export function AccountPage({ page, params }: PageComponentProps) {
     }
 
     return (
-        <div className="max-w-6xl mx-auto p-6">
-            <div className="bg-white rounded-lg shadow-md p-8">
-                {/* Header with user info and logout */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                            Welcome back, {state.user.firstName}!
-                        </h1>
-                        <p className="text-gray-600">
-                            Member since {new Date(state.user.createdAt).getFullYear()}
-                        </p>
-                    </div>
-                    
-                    <div className="mt-4 sm:mt-0 flex items-center space-x-4">
-                        {/* User role badge */}
-                        {state.user.role && (
-                            <span className={`
-                                px-3 py-1 rounded-full text-sm font-medium
-                                ${state.user.role === 'admin' 
-                                    ? 'bg-purple-100 text-purple-800' 
-                                    : 'bg-blue-100 text-blue-800'
-                                }
-                            `}>
-                                {state.user.role === 'admin' ? '👑 Admin' : '🛒 Customer'}
-                            </span>
-                        )}
-                        
-                        {/* Logout button */}
-                        <button
-                            onClick={handleLogout}
-                            disabled={isLoggingOut}
-                            className={`
-                                px-4 py-2 rounded-lg font-medium transition-all duration-200
-                                ${isLoggingOut
-                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                    : 'bg-red-600 text-white hover:bg-red-700 hover:shadow-md'
-                                }
-                            `}
-                        >
-                            {isLoggingOut ? (
-                                <div className="flex items-center">
-                                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    Signing out...
-                                </div>
-                            ) : (
-                                '🚪 Sign Out'
-                            )}
-                        </button>
+        <div className="min-h-screen bg-gray-50 p-6">
+            <div className="max-w-7xl mx-auto bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                {/* Header */}
+                <div className="bg-white border-b border-gray-100">
+                    <div className="px-6 py-8 sm:px-8">
+                        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <h1 className="text-2xl font-medium text-gray-900 tracking-tight">
+                                    Good morning, {state.user.firstName}
+                                </h1>
+                                <p className="text-sm text-gray-500 mt-1">
+                                    Member since {new Date(state.user.createdAt).getFullYear()}
+                                </p>
+                            </div>
+                            
+                            <div className="flex items-center gap-3">
+                                {/* User role badge */}
+                                {state.user.role && (
+                                    <div className={`px-3 py-1.5 text-xs font-medium rounded-full ${
+                                        state.user.role === 'admin' 
+                                            ? 'bg-[#F58232] text-white' 
+                                            : 'bg-orange-50 text-[#F58232]'
+                                    }`}>
+                                        {state.user.role === 'admin' ? '👑 Admin' : 'Customer'}
+                                    </div>
+                                )}
+                                
+                                <button
+                                    onClick={handleLogout}
+                                    disabled={isLoggingOut}
+                                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-colors disabled:opacity-50"
+                                >
+                                    {isLoggingOut ? (
+                                        <>
+                                            <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
+                                            Signing out
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span>Sign out</span>
+                                            <span className="text-gray-400">→</span>
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div className="grid md:grid-cols-4 gap-8">
-                    {/* Sidebar Navigation */}
-                    <div className="md:col-span-1">
-                        <nav className="space-y-2">
-                            {navigationItems.map((item) => (
-                                <button
-                                    key={item.id}
-                                    onClick={() => setActiveTab(item.id)}
-                                    className={`
-                                        w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 flex items-center space-x-3
-                                        ${activeTab === item.id
-                                            ? 'bg-[#f58232] text-white shadow-md'
-                                            : 'text-gray-700 hover:bg-gray-100'
-                                        }
-                                    `}
-                                >
-                                    <span className="text-lg">{item.icon}</span>
-                                    <span className="font-medium">{item.label}</span>
-                                </button>
-                            ))}
+                <div className="flex">
+                    {/* Sidebar */}
+                    <div className="w-64 bg-white border-r border-gray-100 min-h-screen">
+                        <nav className="p-6">
+                            <div className="space-y-1">
+                                {navigationItems.map((item) => (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => setActiveTab(item.id)}
+                                        className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                                            activeTab === item.id
+                                                ? 'text-white bg-[#F58232] shadow-sm'
+                                                : 'text-gray-600 hover:text-[#F58232] hover:bg-orange-50'
+                                        }`}
+                                    >
+                                        <span className="w-4 text-center opacity-60">{item.icon}</span>
+                                        {item.label}
+                                    </button>
+                                ))}
+                            </div>
                         </nav>
                     </div>
 
-                    {/* Main Content Area */}
-                    <div className="md:col-span-3">
+                    {/* Main Content */}
+                    <div className="flex-1 p-8">
                         {activeTab === 'dashboard' && (
-                            <div className="space-y-6">
-                                {/* Account Stats Cards */}
-                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                                    <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-4 rounded-lg text-white">
-                                        <div className="text-2xl font-bold">£{accountData.stats.totalSpent.toLocaleString()}</div>
-                                        <div className="text-blue-100 text-sm">Total Spent</div>
+                            <div className="space-y-8">
+                                {/* Stats Grid */}
+                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                                    <div className="bg-white p-6 rounded-xl border border-gray-100 relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-[#F58232] to-orange-400 opacity-10 rounded-full -mr-8 -mt-8"></div>
+                                        <div className="text-2xl font-semibold text-gray-900 relative">
+                                            £{accountData.stats.totalSpent.toLocaleString()}
+                                        </div>
+                                        <div className="text-sm text-gray-500 mt-1">Total spent</div>
                                     </div>
-                                    <div className="bg-gradient-to-r from-green-500 to-green-600 p-4 rounded-lg text-white">
-                                        <div className="text-2xl font-bold">{accountData.stats.ordersPlaced}</div>
-                                        <div className="text-green-100 text-sm">Orders Placed</div>
+                                    <div className="bg-white p-6 rounded-xl border border-gray-100 relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-400 opacity-10 rounded-full -mr-8 -mt-8"></div>
+                                        <div className="text-2xl font-semibold text-gray-900 relative">
+                                            {accountData.stats.ordersPlaced}
+                                        </div>
+                                        <div className="text-sm text-gray-500 mt-1">Orders placed</div>
                                     </div>
-                                    <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-4 rounded-lg text-white">
-                                        <div className="text-2xl font-bold">{accountData.stats.wishlistItems}</div>
-                                        <div className="text-purple-100 text-sm">Wishlist Items</div>
+                                    <div className="bg-white p-6 rounded-xl border border-gray-100 relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-400 opacity-10 rounded-full -mr-8 -mt-8"></div>
+                                        <div className="text-2xl font-semibold text-gray-900 relative">
+                                            {accountData.stats.wishlistItems}
+                                        </div>
+                                        <div className="text-sm text-gray-500 mt-1">Wishlist items</div>
                                     </div>
-                                    <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-4 rounded-lg text-white">
-                                        <div className="text-2xl font-bold">{accountData.stats.loyaltyPoints}</div>
-                                        <div className="text-orange-100 text-sm">Loyalty Points</div>
+                                    <div className="bg-white p-6 rounded-xl border border-gray-100 relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-400 opacity-10 rounded-full -mr-8 -mt-8"></div>
+                                        <div className="text-2xl font-semibold text-gray-900 relative">
+                                            {accountData.stats.loyaltyPoints}
+                                        </div>
+                                        <div className="text-sm text-gray-500 mt-1">Points earned</div>
                                     </div>
                                 </div>
 
-                                <div className="grid lg:grid-cols-2 gap-6">
+                                <div className="grid lg:grid-cols-2 gap-8">
                                     {/* Recent Orders */}
-                                    <div className="bg-gray-50 p-6 rounded-lg">
-                                        <h3 className="text-lg font-semibold mb-4 flex items-center">
-                                            📦 Recent Orders
-                                        </h3>
-                                        <div className="space-y-3">
+                                    <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+                                        <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-[#F58232] to-orange-400">
+                                            <h3 className="font-medium text-white">Recent orders</h3>
+                                        </div>
+                                        <div className="p-6 space-y-4">
                                             {accountData.recentOrders.map((order) => (
-                                                <div key={order.id} className="bg-white p-4 rounded-lg border">
-                                                    <div className="flex justify-between items-start mb-2">
-                                                        <div>
-                                                            <div className="font-medium text-gray-900">{order.orderNumber}</div>
-                                                            <div className="text-sm text-gray-600">{new Date(order.date).toLocaleDateString()}</div>
+                                                <div key={order.id} className="flex items-center justify-between py-3">
+                                                    <div>
+                                                        <div className="font-medium text-gray-900 text-sm">
+                                                            {order.orderNumber}
                                                         </div>
-                                                        <div className="text-right">
-                                                            <div className="font-bold text-gray-900">£{order.total}</div>
-                                                            <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
-                                                                {order.status}
-                                                            </span>
+                                                        <div className="text-xs text-gray-500 mt-0.5">
+                                                            {new Date(order.date).toLocaleDateString('en-GB', {
+                                                                day: 'numeric',
+                                                                month: 'short',
+                                                                year: 'numeric'
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-3">
+                                                        <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${getStatusColor(order.status)}`}>
+                                                            {order.status}
+                                                        </span>
+                                                        <div className="font-medium text-gray-900">
+                                                            £{order.total}
                                                         </div>
                                                     </div>
                                                 </div>
                                             ))}
                                             <button 
                                                 onClick={() => setActiveTab('orders')}
-                                                className="mt-4 text-[#f58232] text-sm hover:text-[#e6742d] font-medium"
+                                                className="text-sm text-[#F58232] hover:text-orange-600 font-medium mt-4 flex items-center gap-1"
                                             >
-                                                View all orders →
+                                                View all orders 
+                                                <span className="transition-transform group-hover:translate-x-1">→</span>
                                             </button>
                                         </div>
                                     </div>
 
                                     {/* Quick Actions */}
-                                    <div className="bg-gray-50 p-6 rounded-lg">
-                                        <h3 className="text-lg font-semibold mb-4 flex items-center">
-                                            ⚡ Quick Actions
-                                        </h3>
-                                        <div className="grid grid-cols-2 gap-4">
+                                    <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+                                        <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-orange-50">
+                                            <h3 className="font-medium text-gray-900">Quick actions</h3>
+                                        </div>
+                                        <div className="p-6 grid grid-cols-2 gap-4">
                                             <button 
                                                 onClick={() => setActiveTab('orders')}
-                                                className="p-4 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                                                className="p-4 text-left border border-gray-100 rounded-lg hover:border-[#F58232] hover:bg-orange-50 transition-colors group"
                                             >
-                                                <div className="text-center">
-                                                    <div className="text-2xl mb-2">📦</div>
-                                                    <span className="text-sm font-medium">Track Order</span>
-                                                </div>
+                                                <div className="font-medium text-gray-900 text-sm mb-1 group-hover:text-[#F58232]">Track order</div>
+                                                <div className="text-xs text-gray-500">View order status</div>
                                             </button>
                                             <button 
                                                 onClick={() => setActiveTab('profile')}
-                                                className="p-4 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                                                className="p-4 text-left border border-gray-100 rounded-lg hover:border-[#F58232] hover:bg-orange-50 transition-colors group"
                                             >
-                                                <div className="text-center">
-                                                    <div className="text-2xl mb-2">👤</div>
-                                                    <span className="text-sm font-medium">Edit Profile</span>
-                                                </div>
+                                                <div className="font-medium text-gray-900 text-sm mb-1 group-hover:text-[#F58232]">Edit profile</div>
+                                                <div className="text-xs text-gray-500">Update information</div>
                                             </button>
                                             <button 
                                                 onClick={() => setActiveTab('wishlist')}
-                                                className="p-4 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                                                className="p-4 text-left border border-gray-100 rounded-lg hover:border-[#F58232] hover:bg-orange-50 transition-colors group"
                                             >
-                                                <div className="text-center">
-                                                    <div className="text-2xl mb-2">❤️</div>
-                                                    <span className="text-sm font-medium">View Wishlist</span>
-                                                </div>
+                                                <div className="font-medium text-gray-900 text-sm mb-1 group-hover:text-[#F58232]">Wishlist</div>
+                                                <div className="text-xs text-gray-500">Saved items</div>
                                             </button>
                                             <button 
                                                 onClick={() => setActiveTab('addresses')}
-                                                className="p-4 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                                                className="p-4 text-left border border-gray-100 rounded-lg hover:border-[#F58232] hover:bg-orange-50 transition-colors group"
                                             >
-                                                <div className="text-center">
-                                                    <div className="text-2xl mb-2">📍</div>
-                                                    <span className="text-sm font-medium">Addresses</span>
-                                                </div>
+                                                <div className="font-medium text-gray-900 text-sm mb-1 group-hover:text-[#F58232]">Addresses</div>
+                                                <div className="text-xs text-gray-500">Manage locations</div>
                                             </button>
                                         </div>
                                     </div>
@@ -342,50 +359,79 @@ export function AccountPage({ page, params }: PageComponentProps) {
                         )}
 
                         {activeTab === 'profile' && (
-                            <div className="bg-gray-50 p-6 rounded-lg">
-                                <h3 className="text-lg font-semibold mb-4">👤 Profile Information</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                                        <div className="p-3 bg-white border border-gray-200 rounded-lg">{state.user.firstName}</div>
+                            <div className="max-w-4xl">
+                                <div className="bg-white rounded-xl border border-gray-100">
+                                    <div className="p-6 border-b border-gray-100">
+                                        <h3 className="font-medium text-gray-900">Profile information</h3>
+                                        <p className="text-sm text-gray-500 mt-1">Update your account details and preferences</p>
                                     </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                                        <div className="p-3 bg-white border border-gray-200 rounded-lg">{state.user.lastName}</div>
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                        <div className="p-3 bg-white border border-gray-200 rounded-lg">{state.user.email}</div>
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                                        <div className="p-3 bg-white border border-gray-200 rounded-lg">{state.user.phone || 'Not provided'}</div>
+                                    <div className="p-6 space-y-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                    First name
+                                                </label>
+                                                <div className="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900">
+                                                    {state.user.firstName}
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                    Last name
+                                                </label>
+                                                <div className="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900">
+                                                    {state.user.lastName}
+                                                </div>
+                                            </div>
+                                            <div className="md:col-span-2">
+                                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                    Email address
+                                                </label>
+                                                <div className="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900">
+                                                    {state.user.email}
+                                                </div>
+                                            </div>
+                                            <div className="md:col-span-2">
+                                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                    Phone number
+                                                </label>
+                                                <div className="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900">
+                                                    {state.user.phone || 'Not provided'}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="pt-4 border-t border-gray-100">
+                                            <button className="px-6 py-2.5 bg-[#F58232] text-white text-sm font-medium rounded-lg hover:bg-orange-600 transition-colors shadow-sm">
+                                                Edit profile
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                                <button className="mt-4 px-4 py-2 bg-[#f58232] text-white rounded-lg hover:bg-[#e6742d] transition-colors">
-                                    Edit Profile
-                                </button>
                             </div>
                         )}
 
-                        {/* Placeholder content for other tabs */}
+                        {/* Placeholder for other tabs */}
                         {activeTab !== 'dashboard' && activeTab !== 'profile' && (
-                            <div className="bg-gray-50 p-8 rounded-lg text-center">
-                                <div className="text-4xl mb-4">
-                                    {navigationItems.find(item => item.id === activeTab)?.icon}
+                            <div className="max-w-4xl">
+                                <div className="bg-white rounded-xl border border-gray-100 p-12 text-center">
+                                    <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <span className="text-gray-400">
+                                            {navigationItems.find(item => item.id === activeTab)?.icon}
+                                        </span>
+                                    </div>
+                                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                                        {navigationItems.find(item => item.id === activeTab)?.label}
+                                    </h3>
+                                    <p className="text-gray-500 mb-6">
+                                        This section is currently under development.
+                                    </p>
+                                    <button 
+                                        onClick={() => setActiveTab('dashboard')}
+                                        className="px-6 py-2.5 bg-[#F58232] text-white text-sm font-medium rounded-lg hover:bg-orange-600 transition-colors shadow-sm"
+                                    >
+                                        Back to overview
+                                    </button>
                                 </div>
-                                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                                    {navigationItems.find(item => item.id === activeTab)?.label}
-                                </h3>
-                                <p className="text-gray-600 mb-4">
-                                    This section is coming soon! We're working on making your account even better.
-                                </p>
-                                <button 
-                                    onClick={() => setActiveTab('dashboard')}
-                                    className="px-4 py-2 bg-[#f58232] text-white rounded-lg hover:bg-[#e6742d] transition-colors"
-                                >
-                                    Back to Dashboard
-                                </button>
                             </div>
                         )}
                     </div>
