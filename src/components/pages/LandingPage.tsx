@@ -147,19 +147,18 @@ const ScaleIn: React.FC<AnimationComponentProps> = ({
     );
 };
 
-// Subtle parallax effect hook with TypeScript
-const useSubtleParallax = (): number => {
-    const [offset, setOffset] = useState<number>(0);
+// Simple scroll tracking hook
+const useScrollY = () => {
+    const [scrollY, setScrollY] = useState(0);
     
     useEffect(() => {
-        const handleScroll = (): void => {
-            // Very subtle parallax - only move 20% of scroll speed
-            setOffset(window.pageYOffset * 0.2);
+        const handleScroll = () => {
+            setScrollY(window.scrollY);
         };
 
         // Throttle scroll events for performance
         let ticking = false;
-        const throttledScroll = (): void => {
+        const throttledScroll = () => {
             if (!ticking) {
                 requestAnimationFrame(() => {
                     handleScroll();
@@ -170,26 +169,28 @@ const useSubtleParallax = (): number => {
         };
 
         window.addEventListener('scroll', throttledScroll, { passive: true });
+        handleScroll(); // Initial call
         return () => window.removeEventListener('scroll', throttledScroll);
     }, []);
 
-    return offset;
+    return scrollY;
 };
 
-// Main component following your existing pattern
+// Main component with clean Longines-style parallax
 export function LandingPage({ page, params }: PageComponentProps): React.ReactElement {
-    const parallaxOffset = useSubtleParallax();
+    const scrollY = useScrollY();
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Hero Section with Subtle Parallax */}
+        <div className="min-h-screen">
+            {/* Hero Video Section - Normal document flow */}
             <section className="relative h-screen overflow-hidden">
-                {/* Background with subtle parallax */}
+                {/* Video background with parallax effect */}
                 <div 
-                    className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-orange-900"
-                    style={{ transform: `translateY(${parallaxOffset}px)` }}
+                    className="absolute inset-0"
+                    style={{ 
+                        transform: `translateY(${scrollY * 0.5}px)`,
+                    }}
                 >
-                    {/* Video Background - Your existing video code can go here */}
                     <video
                         className="absolute top-0 left-0 w-full h-full object-cover"
                         autoPlay
@@ -202,38 +203,54 @@ export function LandingPage({ page, params }: PageComponentProps): React.ReactEl
                         Your browser does not support the video tag.
                     </video>
                     
-                    {/* Overlay for better text readability */}
+                    {/* Overlay */}
                     <div className="absolute inset-0 bg-black bg-opacity-40"></div>
                 </div>
 
-                {/* Hero Content */}
-                <div className="relative z-10 flex items-center justify-center h-full text-white text-center px-4">
-                    <div className="max-w-8xl">
+                {/* Hero Content - fades out as you scroll */}
+                <div 
+                    className="relative z-10 h-full flex items-end text-white px-8 pb-16 md:px-20 md:pb-20"
+                    style={{
+                        // Simple fade out based on scroll progress
+                        opacity: Math.max(0, 1 - (scrollY / (window.innerHeight * 0.8)))
+                    }}
+                >
+                    <div className="max-w-2xl">
                         <FadeInUp delay={200}>
-                            <h1 className="text-4xl md:text-6xl font-semibold mb-6 drop-shadow-lg">
-                                Discover the world of <span className="text-orange-400">decorative luxury</span> fireplaces
+                            <h1 className="text-3xl md:text-6xl font-light mb-4 leading-tight">
+                                DISCOVER THE WORLD OF <br />
+                                <span className="text-3xl md:text-6xl font-light text-orange-400">LUXURY FIREPLACES</span>
                             </h1>
                         </FadeInUp>
                         
                         <FadeInUp delay={400}>
-                            <p className="text-xl md:text-2xl mb-8 drop-shadow-md opacity-90">
-                                Expert guidance, bespoke solutions, and smokeless fireplaces
+                            <p className="text-base md:text-lg mb-8 font-light opacity-90 leading-relaxed">
+                                Expert guidance, bespoke solutions, and smokeless fireplaces.
                             </p>
                         </FadeInUp>
                         
                         <FadeInUp delay={600}>
-                            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
-                                <button className="bg-transparent text-white border-2 border-[#f58232] px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gradient-to-r hover:from-[#f58232] hover:to-[#ff9500] hover:border-[#f58232] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                                    Read more
+                            <div className="flex flex-col sm:flex-row gap-3">
+                                <button className="bg-white text-gray-900 px-6 py-2.5 text-sm font-medium hover:bg-gray-100 transition-all duration-300">
+                                    Discover more
+                                </button>
+                                <button className="border border-white text-white px-6 py-2.5 text-sm font-medium hover:bg-white hover:text-gray-900 transition-all duration-300">
+                                    Shop the collection
                                 </button>
                             </div>
                         </FadeInUp>
                     </div>
                 </div>
 
-                {/* Scroll indicator */}
+                {/* Scroll indicator - fades out early */}
                 <FadeInUp delay={1000} className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-                    <div className="animate-bounce">
+                    <div 
+                        className="animate-bounce"
+                        style={{
+                            // Fade out earlier in the scroll
+                            opacity: Math.max(0, 1 - (scrollY / (window.innerHeight * 0.6)))
+                        }}
+                    >
                         <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                         </svg>
@@ -241,8 +258,149 @@ export function LandingPage({ page, params }: PageComponentProps): React.ReactEl
                 </FadeInUp>
             </section>
 
-            {/* Features Section */}
-            <section className="py-20 bg-white">
+            {/* Second Hero Image Section - Normal document flow */}
+            <section className="relative h-screen overflow-hidden">
+                {/* Image background with parallax effect */}
+                <div 
+                    className="absolute inset-0"
+                    style={{ 
+                        transform: `translateY(${(scrollY - window.innerHeight) * 0.3}px)`,
+                    }}
+                >
+                    <img
+                        src="/images/Planika_hero.webp"
+                        alt="Luxury Fireplace Collection"
+                        className="w-full h-full object-cover"
+                    />
+                    
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
+                </div>
+
+                {/* Content - fades out as you scroll past this section */}
+                <div 
+                    className="relative z-10 h-full flex items-center text-white px-8 md:px-20"
+                    style={{
+                        // Fade out as you scroll past the image section
+                        opacity: scrollY < window.innerHeight ? 0 : 
+                                Math.max(0, 1 - ((scrollY - window.innerHeight) / (window.innerHeight * 0.8)))
+                    }}
+                >
+                    <div className="max-w-2xl">
+                        <FadeInUp delay={200}>
+                            <h2 className="text-4xl md:text-6xl font-light mb-6 leading-tight">
+                                CRAFTSMANSHIP<br />
+                                <span className="text-orange-400">MEETS INNOVATION</span>
+                            </h2>
+                        </FadeInUp>
+                        
+                        <FadeInUp delay={400}>
+                            <p className="text-lg md:text-xl mb-8 font-light opacity-90 leading-relaxed">
+                                Every fireplace is meticulously designed and engineered to deliver 
+                                exceptional performance while creating an unforgettable ambiance.
+                            </p>
+                        </FadeInUp>
+                        
+                        <FadeInUp delay={600}>
+                            <div className="flex flex-col sm:flex-row gap-4">
+                                <button className="bg-orange-500 text-white px-8 py-3 text-sm font-medium hover:bg-orange-600 transition-all duration-300">
+                                    Explore Innovation
+                                </button>
+                                <button className="border border-white text-white px-8 py-3 text-sm font-medium hover:bg-white hover:text-gray-900 transition-all duration-300">
+                                    View Craftsmanship
+                                </button>
+                            </div>
+                        </FadeInUp>
+                    </div>
+                </div>
+
+                {/* Floating elements */}
+                <div className="absolute top-1/4 right-10 w-20 h-20 border border-white/20 rounded-full hidden lg:block"></div>
+                <div className="absolute bottom-1/4 right-1/4 w-12 h-12 border border-orange-400/30 rounded-full hidden lg:block"></div>
+            </section>
+
+            {/* Longines-Inspired Navigation Indicator */}
+            <div className="fixed right-8 top-1/2 transform -translate-y-1/2 z-50 hidden lg:block">
+                <div className="space-y-6">
+                    {/* Section 1 - Hero Video */}
+                    <div className="group cursor-pointer relative">
+                        <div 
+                            className={`
+                                w-3 h-3 rounded-full transition-all duration-500 ease-out
+                                ${scrollY < window.innerHeight * 0.5
+                                    ? 'bg-white shadow-lg scale-125' 
+                                    : 'bg-white/40 hover:bg-white/70 hover:scale-110'
+                                }
+                            `}
+                        ></div>
+                        {/* Progress line */}
+                        <div className="absolute left-1/2 top-3 w-px h-6 bg-white/20 transform -translate-x-1/2"></div>
+                        {/* Tooltip */}
+                        <div className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-black/80 text-white px-3 py-1.5 text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap backdrop-blur-sm">
+                            <div className="font-medium">01</div>
+                            <div className="text-xs opacity-80">Luxury Collection</div>
+                            {/* Arrow */}
+                            <div className="absolute left-full top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-4 border-l-black/80 border-t-2 border-b-2 border-t-transparent border-b-transparent"></div>
+                        </div>
+                    </div>
+
+                    {/* Section 2 - Innovation */}
+                    <div className="group cursor-pointer relative">
+                        <div 
+                            className={`
+                                w-3 h-3 rounded-full transition-all duration-500 ease-out
+                                ${scrollY >= window.innerHeight * 0.5 && scrollY < window.innerHeight * 1.5
+                                    ? 'bg-orange-400 shadow-lg shadow-orange-400/30 scale-125' 
+                                    : 'bg-white/40 hover:bg-orange-400/70 hover:scale-110'
+                                }
+                            `}
+                        ></div>
+                        {/* Progress line */}
+                        <div className="absolute left-1/2 top-3 w-px h-6 bg-white/20 transform -translate-x-1/2"></div>
+                        {/* Tooltip */}
+                        <div className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-black/80 text-white px-3 py-1.5 text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap backdrop-blur-sm">
+                            <div className="font-medium">02</div>
+                            <div className="text-xs opacity-80">Innovation & Craft</div>
+                            {/* Arrow */}
+                            <div className="absolute left-full top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-4 border-l-black/80 border-t-2 border-b-2 border-t-transparent border-b-transparent"></div>
+                        </div>
+                    </div>
+
+                    {/* Section 3 - Features */}
+                    <div className="group cursor-pointer relative">
+                        <div 
+                            className={`
+                                w-3 h-3 rounded-full transition-all duration-500 ease-out
+                                ${scrollY >= window.innerHeight * 1.5
+                                    ? 'bg-white shadow-lg scale-125' 
+                                    : 'bg-white/40 hover:bg-white/70 hover:scale-110'
+                                }
+                            `}
+                        ></div>
+                        {/* Tooltip */}
+                        <div className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-black/80 text-white px-3 py-1.5 text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap backdrop-blur-sm">
+                            <div className="font-medium">03</div>
+                            <div className="text-xs opacity-80">Features & Benefits</div>
+                            {/* Arrow */}
+                            <div className="absolute left-full top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-4 border-l-black/80 border-t-2 border-b-2 border-t-transparent border-b-transparent"></div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Scroll progress indicator */}
+                <div className="absolute -left-8 top-0 bottom-0 w-px bg-white/20">
+                    <div 
+                        className="w-full bg-gradient-to-b from-white to-orange-400 transition-all duration-300 ease-out"
+                        style={{ 
+                            height: `${Math.min(100, (scrollY / (window.innerHeight * 2)) * 100)}%`,
+                            opacity: 0.6
+                        }}
+                    ></div>
+                </div>
+            </div>
+
+            {/* Features Section - Normal document flow */}
+            <section className="py-20 bg-white relative z-30">
                 <div className="max-w-7xl mx-auto px-4">
                     <FadeInUp>
                         <div className="text-center mb-16">

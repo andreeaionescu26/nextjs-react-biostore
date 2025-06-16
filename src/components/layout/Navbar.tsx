@@ -15,6 +15,7 @@ const Navbar = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
   const pathname = usePathname();
 
   // Get cart item count
@@ -25,16 +26,27 @@ const Navbar = () => {
   const { state: authState, logout } = useAuth();
   const { isAuthentificated, user, isLoading } = authState;
 
-  // Check if we're on a page with hero video (like landing page)
+  // Check if we're on a page with hero video and image (like landing page)
   const isVideoPage = pathname === '/' || pathname.includes('/landing');
 
-  // Handle scroll effect
+  // Enhanced scroll effect - stays transparent through both video and image sections
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const currentScrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      
+      // Calculate when both hero sections (video + image) are passed
+      // Video section: 0 to windowHeight
+      // Image section: windowHeight to windowHeight * 2
+      // Navbar becomes white only after both sections (windowHeight * 2)
+      const bothHeroSectionsPassed = currentScrollY > (windowHeight * 2 - 100); // 100px buffer for smooth transition
+      
+      setScrollPosition(currentScrollY);
+      setIsScrolled(bothHeroSectionsPassed);
     };
 
     window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial call
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -57,10 +69,10 @@ const Navbar = () => {
     return () => document.removeEventListener('click', handleClickOutside);
   }, [showUserDropdown]);
 
-  // Dynamic navbar styles based on context
+  // Dynamic navbar styles based on context - Enhanced for both hero sections
   const getNavbarStyles = () => {
     if (isVideoPage && !isScrolled) {
-      // Over video: transparent with white text
+      // Over video OR image: transparent with white text
       return {
         background: isHovered 
           ? 'bg-black/10 backdrop-blur-md' 
@@ -71,7 +83,7 @@ const Navbar = () => {
         accentColor: '#f58232'
       };
     } else {
-      // Normal state: clean white background
+      // After both hero sections: clean white background
       return {
         background: isScrolled 
           ? 'bg-white/95 backdrop-blur-xl shadow-lg border-b border-neutral-100' 
@@ -86,10 +98,10 @@ const Navbar = () => {
 
   const styles = getNavbarStyles();
 
-  // Get search input styles based on context
+  // Get search input styles based on context - Enhanced for both hero sections
   const getSearchStyles = () => {
     if (isVideoPage && !isScrolled) {
-      // Over video: minimal glass effect
+      // Over video OR image: minimal glass effect
       return {
         container: 'max-w-sm transition-all duration-500 ease-out',
         input: `
@@ -108,7 +120,7 @@ const Navbar = () => {
         clear: 'text-white/60 hover:text-white/90'
       };
     } else {
-      // Normal state: subtle solid background
+      // After both hero sections: subtle solid background
       return {
         container: 'max-w-md transition-all duration-500 ease-out',
         input: `
