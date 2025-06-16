@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import NavigationMenu from '@/components/navigation/NavigationMenu';
 import SearchInput from '@/components/ui/SearchInput';
 import { useCart } from '@/hooks/useCart';
+import { useAuth, authHelpers } from '@/context/AuthContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,11 +14,16 @@ const Navbar = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
   const pathname = usePathname();
 
-  //Get cart item count
-  const { state } = useCart();
-  const { itemCount } = state;
+  // Get cart item count
+  const { state: cartState } = useCart();
+  const { itemCount } = cartState;
+
+  // Get authentication state
+  const { state: authState, logout } = useAuth();
+  const { isAuthentificated, user, isLoading } = authState;
 
   // Check if we're on a page with hero video (like landing page)
   const isVideoPage = pathname === '/' || pathname.includes('/landing');
@@ -36,7 +42,20 @@ const Navbar = () => {
   useEffect(() => {
     setIsOpen(false);
     setShowSearch(false);
+    setShowUserDropdown(false);
   }, [pathname]);
+
+  // Close user dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showUserDropdown && !(event.target as Element)?.closest('.user-dropdown')) {
+        setShowUserDropdown(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [showUserDropdown]);
 
   // Dynamic navbar styles based on context
   const getNavbarStyles = () => {
@@ -117,6 +136,12 @@ const Navbar = () => {
     setShowSearch(!showSearch);
   };
 
+  // Handle logout
+  const handleLogout = () => {
+    logout();
+    setShowUserDropdown(false);
+  };
+
   // SearchInput with custom styling
   const StyledSearchInput = ({ isMobile = false }) => {
     return (
@@ -156,7 +181,6 @@ const Navbar = () => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      
       
       <div className="container mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center py-4 lg:py-6">
@@ -256,33 +280,184 @@ const Navbar = () => {
               </svg>
             </button>
 
-            {/* Account Button */}
-            <Link 
-              href="/my-account" 
-              className="group relative transition-all duration-300"
-              aria-label="My Account"
-            >
-              <svg
-                className={`
-                  w-5 h-5 lg:w-6 lg:h-6 transition-all duration-300
-                  ${isVideoPage && !isScrolled 
-                    ? 'text-white/90 hover:text-[#f58232] drop-shadow-sm' 
-                    : 'text-neutral-600 hover:text-[#f58232]'
-                  }
-                  group-hover:scale-110
-                `}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-            </Link>
+            {/* Account Button - Now with Authentication Logic */}
+            <div className="relative user-dropdown">
+              {isLoading ? (
+                // Loading state
+                <div className={`
+                  w-5 h-5 lg:w-6 lg:h-6 rounded-full animate-pulse
+                  ${isVideoPage && !isScrolled ? 'bg-white/30' : 'bg-gray-300'}
+                `}></div>
+              ) : isAuthentificated && user ? (
+                // Logged in - Show user dropdown
+                <button
+                  onClick={() => setShowUserDropdown(!showUserDropdown)}
+                  className="group relative transition-all duration-300 flex items-center space-x-2"
+                  aria-label="Account Menu"
+                >
+                  {/* User Avatar */}
+                  <div className={`
+                    w-8 h-8 lg:w-9 lg:h-9 rounded-full flex items-center justify-center font-semibold text-sm
+                    transition-all duration-300 group-hover:scale-110
+                    ${isVideoPage && !isScrolled 
+                      ? 'bg-white/20 text-white border-2 border-white/30' 
+                      : 'bg-[#f58232] text-white border-2 border-transparent'
+                    }
+                  `}>
+                    {user.firstName[0]}{user.lastName[0]}
+                  </div>
+                  
+                  {/* User name (desktop only) */}
+                  <span className={`
+                    hidden lg:block text-sm font-medium transition-colors duration-300
+                    ${isVideoPage && !isScrolled 
+                      ? 'text-white/90 group-hover:text-white' 
+                      : 'text-neutral-700 group-hover:text-neutral-900'
+                    }
+                  `}>
+                    {user.firstName}
+                  </span>
+                  
+                  {/* Dropdown arrow */}
+                  <svg
+                    className={`
+                      w-4 h-4 transition-all duration-300
+                      ${showUserDropdown ? 'rotate-180' : ''}
+                      ${isVideoPage && !isScrolled 
+                        ? 'text-white/70' 
+                        : 'text-neutral-500'
+                      }
+                    `}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              ) : (
+                // Not logged in - Show login button
+                <Link 
+                  href="/login" 
+                  className="group relative transition-all duration-300 flex items-center space-x-2"
+                  aria-label="Sign In"
+                >
+                  <svg
+                    className={`
+                      w-5 h-5 lg:w-6 lg:h-6 transition-all duration-300
+                      ${isVideoPage && !isScrolled 
+                        ? 'text-white/90 hover:text-[#f58232] drop-shadow-sm' 
+                        : 'text-neutral-600 hover:text-[#f58232]'
+                      }
+                      group-hover:scale-110
+                    `}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                  <span className={`
+                    hidden lg:block text-sm font-medium transition-colors duration-300
+                    ${isVideoPage && !isScrolled 
+                      ? 'text-white/90 group-hover:text-white' 
+                      : 'text-neutral-700 group-hover:text-neutral-900'
+                    }
+                  `}>
+                    Sign In
+                  </span>
+                </Link>
+              )}
+
+              {/* User Dropdown Menu */}
+              {showUserDropdown && isAuthentificated && user && (
+                <div className={`
+                  absolute right-0 top-full mt-2 w-64 z-50
+                  bg-white border border-neutral-200 rounded-xl shadow-lg
+                  transform transition-all duration-200 ease-out
+                  ${isVideoPage && !isScrolled ? 'backdrop-blur-xl bg-white/95' : ''}
+                `}>
+                  {/* User Info Header */}
+                  <div className="px-4 py-3 border-b border-neutral-100">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-[#f58232] text-white rounded-full flex items-center justify-center font-semibold">
+                        {user.firstName[0]}{user.lastName[0]}
+                      </div>
+                      <div>
+                        <div className="font-medium text-neutral-900">
+                          {authHelpers.getDisplayName(user)}
+                        </div>
+                        <div className="text-sm text-neutral-600">{user.email}</div>
+                        {user.role && (
+                          <span className={`
+                            inline-block px-2 py-0.5 rounded-full text-xs font-medium mt-1
+                            ${user.role === 'admin' 
+                              ? 'bg-purple-100 text-purple-700' 
+                              : 'bg-blue-100 text-blue-700'
+                            }
+                          `}>
+                            {user.role === 'admin' ? '👑 Admin' : '🛒 Customer'}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Menu Items */}
+                  <div className="py-2">
+                    <Link
+                      href="/my-account"
+                      className="flex items-center px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 transition-colors"
+                      onClick={() => setShowUserDropdown(false)}
+                    >
+                      <svg className="w-4 h-4 mr-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      My Account
+                    </Link>
+                    
+                    <Link
+                      href="/my-account"
+                      className="flex items-center px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 transition-colors"
+                      onClick={() => setShowUserDropdown(false)}
+                    >
+                      <svg className="w-4 h-4 mr-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                      Orders
+                    </Link>
+                    
+                    <Link
+                      href="/my-account"
+                      className="flex items-center px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 transition-colors"
+                      onClick={() => setShowUserDropdown(false)}
+                    >
+                      <svg className="w-4 h-4 mr-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                      </svg>
+                      Wishlist
+                    </Link>
+
+                    <div className="border-t border-neutral-100 mt-2 pt-2">
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                      >
+                        <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Cart Button with Badge */}
             <Link 
@@ -385,21 +560,58 @@ const Navbar = () => {
               isScrolled={isScrolled}
             />
             
-            {/* Clean Mobile CTA */}
+            {/* Mobile Auth Section */}
             <div className="mt-6 pt-6 border-t border-current border-opacity-20">
-              <Link
-                href="/contact"
-                className={`
-                  block w-full text-center py-3 px-6 font-medium text-base
-                  transform hover:scale-105 transition-all duration-300 border-2 rounded-lg
-                  ${isVideoPage && !isScrolled 
-                    ? 'text-[#f58232] border-[#f58232] hover:bg-[#f58232] hover:text-white backdrop-blur-sm' 
-                    : 'text-[#f58232] border-[#f58232] hover:bg-[#f58232] hover:text-white'
-                  }
-                `}
-              >
-                Schedule Consultation
-              </Link>
+              {isAuthentificated && user ? (
+                <div className="space-y-3">
+                  <div className={`
+                    text-sm font-medium
+                    ${isVideoPage && !isScrolled ? 'text-white/90' : 'text-neutral-700'}
+                  `}>
+                    Welcome, {user.firstName}!
+                  </div>
+                  <Link
+                    href="/my-account"
+                    className={`
+                      block w-full text-center py-3 px-6 font-medium text-base
+                      transform hover:scale-105 transition-all duration-300 border-2 rounded-lg
+                      ${isVideoPage && !isScrolled 
+                        ? 'text-white border-white hover:bg-white hover:text-neutral-900 backdrop-blur-sm' 
+                        : 'text-neutral-700 border-neutral-300 hover:bg-neutral-50'
+                      }
+                    `}
+                  >
+                    My Account
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className={`
+                      block w-full text-center py-2 px-6 font-medium text-sm
+                      transition-all duration-300 rounded-lg
+                      ${isVideoPage && !isScrolled 
+                        ? 'text-white/80 hover:text-white hover:bg-white/10' 
+                        : 'text-red-600 hover:bg-red-50'
+                      }
+                    `}
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  className={`
+                    block w-full text-center py-3 px-6 font-medium text-base
+                    transform hover:scale-105 transition-all duration-300 border-2 rounded-lg
+                    ${isVideoPage && !isScrolled 
+                      ? 'text-[#f58232] border-[#f58232] hover:bg-[#f58232] hover:text-white backdrop-blur-sm' 
+                      : 'text-[#f58232] border-[#f58232] hover:bg-[#f58232] hover:text-white'
+                    }
+                  `}
+                >
+                  Sign In
+                </Link>
+              )}
             </div>
           </div>
         </div>
